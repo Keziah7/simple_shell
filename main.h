@@ -1,24 +1,46 @@
-#ifndef SIMPLE_SHELL
-#define SIMPLE_SHELL
+#ifndef MAIN_H
+#define MAIN_H
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <limits.h>
 #include <signal.h>
-char *read_line(void);
-char **splits(char *line, char *delim);
-int execute(char **parse);
-void _puts(char *str);
-int _putchar(char c);
-unsigned int _strlen(char *s);
-char **find_path(char **environ);
-char *_getenv(char **environ, char *dirname);
-char *args_path(char **parse, char **tokens);
-char *_strdup(char *str);
-char *if_exists(char **environ);
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+/* innitial size of buffer for user input */
+#define READ_BUF 1000
+#define DELIM " \a\t\r\n"
+/* command type */
+#define INTERNAL_CMD 1
+#define EXTERNAL_CMD 2
+#define PATH_CMD 3
+#define INVALID_CMD -1
+/* declaring global environ variable */
 extern char **environ;
-#endif
+typedef struct internal_func
+{
+char *cmd_name;
+void (*func)(char **command);
+} map_func;
+/* builtin command */
+void env(char **);
+void ch_dir(char **);
+void quit(char **);
+/* shell utility function */
+void ctrl_C(int);
+char *_getline(void);
+char **tokenize(char *, const char *);
+void shell_execute(char **, int);
+int check_command(char *);
+void execute(char **, int);
+/* shell helper function */
+int print(char *, int);
+void (*get_func(char *))(char **);
+/* shell string functions */
+int _strlen(char *);
+int _strcmp(char*, char *);
+/* shell memory management */
+void *_realloc(void *, int, int);
+/* environment path */
+char *_getenv(char *);
+#endif /* SHELL_H */
